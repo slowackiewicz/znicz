@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Znicz</title>
+<style>
+  /* ============ PODSTAWY ============ */
+  :root{
+    --text:#ece6dc;
+    --muted:#a89f93;
+  }
+
+  *, *::before, *::after{ box-sizing:border-box; }
+
+  html, body{ margin:0; min-height:100%; }
+
+  body{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:48px 20px 40px;
+    font-family:"Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 58%, rgba(255,120,30,.10), transparent 70%),
+      radial-gradient(ellipse 120% 90% at 50% 15%, #151824 0%, #0a0b12 42%, #04050a 100%);
+    background-attachment:fixed;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ============ WARSTWA TREŚCI ============ */
+  main{
+    position:relative;
+    z-index:6;
+    width:100%;
+    max-width:660px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+
+  /* --- Tytuł --- */
+  .title{
+    margin:0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight:400;
+    font-size:clamp(24px, 5vw, 38px);
+    letter-spacing:.42em;
+    text-indent:.42em;
+    text-transform:uppercase;
+    background:linear-gradient(180deg,#fff3d6 0%,#ffd189 45%,#cf8020 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 0 24px rgba(255,165,60,.30));
+  }
+
+  .subtitle{
+    margin:14px 0 0;
+    font-size:clamp(12px, 2.4vw, 14px);
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  .divider{
+    width:70px;
+    height:1px;
+    margin:22px 0 0;
+    background:linear-gradient(90deg, transparent, rgba(255,180,90,.75), transparent);
+  }
+
+  /* ============ SCENA ZE ZNICZEM ============ */
+  .scene{
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    height:360px;
+    margin:4px 0 6px;
+  }
+
+  .znicz{
+    position:relative;
+    flex:0 0 auto;
+    width:200px;
+    height:360px;
+  }
+
+  /* --- Poświata wokół płomienia --- */
+  .aura{
+    position:absolute;
+    left:50%;
+    bottom:-16px;
+    width:560px;
+    height:560px;
+    border-radius:50%;
+    transform:translateX(-50%);
+    background:radial-gradient(circle at 50% 50%,
+                rgba(255,150,45,.24) 0%,
+                rgba(255,105,20,.11) 32%,
+                rgba(255,80,0,.04) 55%,
+                transparent 72%);
+    pointer-events:none;
+    animation:pulse 3.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:.75; transform:translateX(-50%) scale(1); }
+    50%    { opacity:1;   transform:translateX(-50%) scale(1.07); }
+  }
+
+  /* --- Płomień (SVG) --- */
+  .flame-wrap{
+    position:absolute;
+    left:50%;
+    bottom:208px;
+    width:70px;
+    height:112px;
+    transform:translateX(-50%);
+    z-index:4;
+    pointer-events:none;
+  }
+
+  .flame{
+    display:block;
+    width:100%;
+    height:100%;
+    transform-origin:50% 100%;
+    animation:flicker 2.2s ease-in-out infinite;
+    filter:
+      drop-shadow(0 0 12px rgba(255,170,60,.85))
+      drop-shadow(0 0 34px rgba(255,110,20,.55))
+      drop-shadow(0 0 70px rgba(255,80,0,.30));
+  }
+
+  .flame-core{
+    transform-origin:50% 100%;
+    animation:flicker-core 1.15s ease-in-out infinite;
+  }
+
+  @keyframes flicker{
+    0%,100%{ transform:scale(1,1)          rotate(-1.4deg); }
+    20%    { transform:scale(.965,1.06)    rotate(1.1deg);  }
+    40%    { transform:scale(1.025,.955)   rotate(-.7deg);  }
+    60%    { transform:scale(.985,1.035)   rotate(1.5deg);  }
+    80%    { transform:scale(1.03,.975)    rotate(-1deg);   }
+  }
+
+  @keyframes flicker-core{
+    0%,100%{ transform:scale(1,1)     translateY(0); }
+    35%    { transform:scale(.9,1.08) translateY(-2px); }
+    70%    { transform:scale(1.06,.94) translateY(1px); }
+  }
+
+  /* --- Iskry unoszące się nad płomieniem --- */
+  .embers{
+    position:absolute;
+    left:50%;
+    bottom:212px;
+    width:120px;
+    height:180px;
+    transform:translateX(-50%);
+    pointer-events:none;
+    z-index:4;
+  }
+  .embers span{
+    position:absolute;
+    bottom:0;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:radial-gradient(circle,#ffe9b5 0%,#ffb347 45%,#ff6a00 70%,transparent 72%);
+    box-shadow:0 0 7px 1px rgba(255,150,50,.75);
+    opacity:0;
+    animation:rise 7s linear infinite;
+  }
+  .embers span:nth-child(1){ left:28%; --dx:-18px; animation-duration:6.0s; animation-delay:0s;   }
+  .embers span:nth-child(2){ left:44%; --dx: 11px; animation-duration:7.2s; animation-delay:1.2s; }
+  .embers span:nth-child(3){ left:60%; --dx: 17px; animation-duration:6.5s; animation-delay:2.4s; }
+  .embers span:nth-child(4){ left:36%; --dx: -8px; animation-duration:8.0s; animation-delay:3.1s; }
+  .embers span:nth-child(5){ left:52%; --dx:  4px; animation-duration:7.6s; animation-delay:0.6s; }
+  .embers span:nth-child(6){ left:66%; --dx: 21px; animation-duration:6.8s; animation-delay:4.0s; }
+  .embers span:nth-child(7){ left:22%; --dx:-23px; animation-duration:7.3s; animation-delay:2.0s; }
+  .embers span:nth-child(8){ left:50%; --dx: -3px; animation-duration:6.2s; animation-delay:5.0s; }
+
+  @keyframes rise{
+    0%  { opacity:0;   transform:translate(0,0) scale(1); }
+    8%  { opacity:.95; }
+    55% { opacity:.60; }
+    100%{ opacity:0;   transform:translate(var(--dx,0), -168px) scale(.2); }
+  }
+
+  /* --- Wieko znicza --- */
+  .lid{
+    position:absolute;
+    left:50%;
+    bottom:196px;
+    width:208px;
+    height:28px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:linear-gradient(180deg,#8d8d9c 0%,#5c5c6a 22%,#2b2b35 62%,#14141c 100%);
+    box-shadow:
+      inset 0 1px 1px rgba(255,255,255,.45),
+      inset 0 -4px 10px rgba(0,0,0,.85),
+      0 7px 18px rgba(0,0,0,.72),
+      0 0 26px rgba(255,140,50,.26);
+    z-index:3;
+  }
+  .lid::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:0;
+    width:78px;
+    height:15px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:radial-gradient(ellipse at 50% 50%, rgba(255,196,100,.85), transparent 70%);
+    filter:blur(3px);
+  }
+
+  /* --- Szklany korpus znicza --- */
+  .body{
+    position:absolute;
+    left:50%;
+    bottom:0;
+    width:190px;
+    height:212px;
+    transform:translateX(-50%);
+    border-radius:8px 8px 16px 16px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0) 52%, rgba(0,0,0,.60) 100%),
+      linear-gradient(90deg,
+        #2e0b06 0%,
+        #6d1f10 10%,
+        #b53c1c 28%,
+        #e0662f 43%,
+        #c04a20 58%,
+        #7d2614 78%,
+        #3a0e07 100%);
+    box-shadow:
+      inset 0 -22px 44px rgba(0,0,0,.60),
+      inset 0  14px 34px rgba(255,150,70,.32),
+      0 16px 36px rgba(0,0,0,.68);
+    z-index:2;
+    overflow:hidden;
+  }
+
+  .shine,
+  .shine-2{
+    position:absolute;
+    border-radius:50%;
+  }
+  .shine{
+    left:13%;
+    top:5%;
+    width:11%;
+    height:86%;
+    background:linear-gradient(180deg, rgba(255,255,255,.58), rgba(255,255,255,.07) 60%, transparent);
+    filter:blur(2.5px);
+  }
+  .shine-2{
+    right:14%;
+    top:10%;
+    width:6%;
+    height:70%;
+    background:linear-gradient(180deg, rgba(255,255,255,.28), transparent);
+    filter:blur(2px);
+  }
+
+  .inner-glow{
+    position:absolute;
+    left:50%;
+    top:-8px;
+    width:90%;
+    height:54%;
+    transform:translateX(-50%);
+    background:radial-gradient(ellipse at 50% 0%,
+                rgba(255,200,130,.62) 0%,
+                rgba(255,125,40,.20) 45%,
+                transparent 74%);
+    filter:blur(6px);
+  }
+
+  /* --- Cień i odbicie na "ziemi" --- */
+  .ground{
+    position:absolute;
+    left:50%;
+    bottom:-20px;
+    width:300px;
+    height:50px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    background:radial-gradient(ellipse at center, rgba(0,0,0,.85), transparent 68%);
+    filter:blur(7px);
+    z-index:0;
+  }
+  .ground::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    background:radial-gradient(ellipse at center, rgba(255,120,40,.20), transparent 62%);
+    filter:blur(11px);
+  }
+
+  /* ============ TEKST ============ */
+  .verse{
+    max-width:520px;
+    margin:8px 0 0;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size:clamp(15px, 2.9vw, 18px);
+    line-height:1.85;
+    font-style:italic;
+    color:#ded6c9;
+    text-shadow:0 1px 18px rgba(0,0,0,.9);
+  }
+
+  .note{
+    margin:22px 0 0;
+    font-size:clamp(11px, 2.3vw, 13px);
+    letter-spacing:.34em;
+    text-indent:.34em;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ============ WINIETA ============ */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:5;
+    background:radial-gradient(ellipse at 50% 45%, transparent 34%, rgba(0,0,0,.72) 100%);
+  }
+
+  /* ============ RESPONSYWNOŚĆ ============ */
+  @media (max-width:560px){
+    body{ padding:34px 16px 30px; }
+    .scene{ height:272px; margin-bottom:2px; }
+    .znicz{ transform:scale(.76); transform-origin:center bottom; }
+    .subtitle{ letter-spacing:.18em; }
+  }
+
+  @media (max-width:380px){
+    .scene{ height:228px; }
+    .znicz{ transform:scale(.62); transform-origin:center bottom; }
+  }
+
+  /* ============ OGRANICZENIE ANIMACJI ============ */
+  @media (prefers-reduced-motion: reduce){
+    .flame,
+    .flame-core,
+    .aura,
+    .stars,
+    .embers span{
+      animation:none !important;
+    }
+    .embers span{ opacity:.35; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="stars" aria-hidden="true"></div>
+
+  <main>
+
+    <h1 class="title">Pamięć</h1>
+    <p class="subtitle">Światło, które nie gaśnie</p>
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- ================= ZNICZ ================= -->
+    <div class="scene">
+      <div class="znicz" role="img"
+           aria-label="Płonący znicz – symbol pamięci i zadumy">
+
+        <div class="aura" aria-hidden="true"></div>
+
+        <!-- Płomień -->
+        <div class="flame-wrap" aria-hidden="true">
+          <svg class="flame" viewBox="0 0 100 160" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="flameGrad" cx="50%" cy="80%" r="68%">
+                <stop offset="0%"   stop-color="#fffdf0"/>
+                <stop offset="20%"  stop-color="#fff3ae"/>
+                <stop offset="44%"  stop-color="#ffc93c"/>
+                <stop offset="68%"  stop-color="#ff8a00"/>
+                <stop offset="87%"  stop-color="#ff4d00"/>
+                <stop offset="100%" stop-color="#e01b00" stop-opacity="0"/>
+              </radialGradient>
+              <radialGradient id="coreGrad" cx="50%" cy="82%" r="58%">
+                <stop offset="0%"   stop-color="#ffffff"/>
+                <stop offset="48%"  stop-color="#fffbd8" stop-opacity=".92"/>
+                <stop offset="100%" stop-color="#ffd24a" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+
+            <path d="M50 4
+                     C 62 42, 90 74, 90 110
+                     C 90 140, 72 158, 50 158
+                     C 28 158, 10 140, 10 110
+                     C 10 74, 38 42, 50 4 Z"
+                  fill="url(#flameGrad)"/>
+
+            <path class="flame-core"
+                  d="M50 62
+                     C 58 90, 70 104, 70 122
+                     C 70 140, 61 152, 50 152
+                     C 39 152, 30 140, 30 122
+                     C 30 104, 42 90, 50 62 Z"
+                  fill="url(#coreGrad)"/>
+          </svg>
+        </div>
+
+        <!-- Iskry -->
+        <div class="embers" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+
+        <!-- Wieko -->
+        <div class="lid" aria-hidden="true"></div>
+
+        <!-- Korpus -->
+        <div class="body" aria-hidden="true">
+          <span class="inner-glow"></span>
+          <span class="shine"></span>
+          <span class="shine-2"></span>
+        </div>
+
+        <!-- Cień -->
+        <div class="ground" aria-hidden="true"></div>
+
+      </div>
+    </div>
+    <!-- =============== KONIEC ZNICZA =============== -->
+
+    <blockquote class="verse">
+      Płomień ten płonie dla tych, którzy odeszli.<br>
+      Pamięć o nich jest światłem, które nigdy nie gaśnie.
+    </blockquote>
+
+    <p class="note">Zatrzymaj się · Wspomnij · Zapal</p>
+
+  </main>
+
+</body>
+</html>
