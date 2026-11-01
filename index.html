@@ -4,14 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Znicz</title>
-
 <style>
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
 body {
     min-height: 100vh;
     display: flex;
@@ -22,14 +20,11 @@ body {
     overflow: hidden;
     font-family: "Georgia", serif;
 }
-
 .scene {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-
-/* Aura światła */
 .glow {
     position: absolute;
     width: 320px;
@@ -43,8 +38,6 @@ body {
     filter: blur(30px);
     animation: pulse 3s ease-in-out infinite;
 }
-
-/* Płomień */
 .flame {
     position: relative;
     width: 52px;
@@ -52,7 +45,6 @@ body {
     margin-bottom: -8px;
     z-index: 2;
 }
-
 .flame::before,
 .flame::after {
     content: "";
@@ -61,7 +53,6 @@ body {
     transform-origin: bottom center;
     border-radius: 50% 50% 45% 45%;
 }
-
 .flame::before {
     width: 52px;
     height: 90px;
@@ -76,7 +67,6 @@ body {
     filter: blur(.5px);
     animation: flicker 1.6s ease-in-out infinite;
 }
-
 .flame::after {
     width: 26px;
     height: 48px;
@@ -88,8 +78,6 @@ body {
     transform: translateX(-50%);
     animation: flickerInner 1.2s ease-in-out infinite;
 }
-
-/* Knot */
 .wick {
     width: 15px;
     height: 18px;
@@ -97,8 +85,6 @@ body {
     margin-top: -8px;
     z-index: 3;
 }
-
-/* Znicz */
 .candle {
     position: relative;
     width: 240px;
@@ -115,7 +101,6 @@ body {
         0 20px 35px rgba(0,0,0,.65),
         inset 0 1px 3px rgba(255,255,255,.15);
 }
-
 .candle::before {
     content: "";
     position: absolute;
@@ -131,7 +116,6 @@ body {
         #8c4734);
     box-shadow: inset 0 2px 4px rgba(255,255,255,.12);
 }
-
 .candle::after {
     content: "";
     position: absolute;
@@ -143,27 +127,22 @@ body {
     border-radius: 50%;
     background: rgba(255,240,210,.35);
 }
-
-/* Napis */
 .text {
     margin-top: 70px;
     text-align: center;
     color: #e5dccf;
     letter-spacing: 0.25em;
 }
-
 .text h1 {
     font-size: 2.4rem;
     font-weight: normal;
 }
-
 .text p {
     margin-top: 12px;
     color: #9b968f;
     font-size: 0.95rem;
     letter-spacing: 0.12em;
 }
-
 @keyframes flicker {
     0%,100% {
         transform: translateX(-50%) rotate(-4deg) scaleY(1);
@@ -178,12 +157,10 @@ body {
         transform: translateX(-49%) rotate(3deg) scaleY(1.03);
     }
 }
-
 @keyframes flickerInner {
     0%,100% { opacity: 1; }
     50% { opacity: .72; }
 }
-
 @keyframes pulse {
     0%,100% {
         transform: scale(1);
