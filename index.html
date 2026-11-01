@@ -40,61 +40,43 @@ body {
 }
 .flame {
     position: relative;
-    width: 36px;
-    height: 70px;
-    margin-bottom: -5px;
+    width: 52px;
+    height: 95px;
+    margin-bottom: -8px;
     z-index: 2;
 }
-.flame::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 34px;
-    height: 64px;
-    transform: translateX(-50%);
-    background: linear-gradient(
-        to top,
-        #ff7b00 0%,
-        #ffb300 45%,
-        #fff4c4 75%,
-        #ffffff 100%
-    );
-    clip-path: polygon(
-        50% 0%,
-        68% 18%,
-        82% 42%,
-        74% 72%,
-        50% 100%,
-        26% 72%,
-        18% 42%,
-        32% 18%
-    );
-    filter: drop-shadow(0 0 12px rgba(255,180,60,.7));
-    animation: flicker 1.5s ease-in-out infinite;
-}
+.flame::before,
 .flame::after {
     content: "";
     position: absolute;
     left: 50%;
-    bottom: 10px;
-    width: 16px;
-    height: 32px;
+    transform-origin: bottom center;
+    border-radius: 50% 50% 45% 45%;
+}
+.flame::before {
+    width: 52px;
+    height: 90px;
+    transform: translateX(-50%) rotate(-3deg);
+    background:
+        radial-gradient(circle at 50% 30%,
+        #fffef5 0%,
+        #fff6bc 22%,
+        #ffd261 55%,
+        #ff8f1f 80%,
+        #ff6200 100%);
+    filter: blur(.5px);
+    animation: flicker 1.6s ease-in-out infinite;
+}
+.flame::after {
+    width: 26px;
+    height: 48px;
+    background:
+        radial-gradient(circle at 50% 25%,
+        #ffffff 0%,
+        #fff4d8 60%,
+        rgba(255,255,255,.2) 100%);
     transform: translateX(-50%);
-    background: linear-gradient(
-        to top,
-        #fff0b0,
-        #ffffff
-);
-    clip-path: polygon(
-        50% 0%,
-        70% 25%,
-        80% 50%,
-        50% 100%,
-        20% 50%,
-        30% 25%
-    );
-    opacity: 0.95;
+    animation: flickerInner 1.2s ease-in-out infinite;
 }
 .wick {
     width: 15px;
